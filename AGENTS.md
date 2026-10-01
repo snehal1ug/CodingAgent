@@ -4,9 +4,10 @@
 
 1. Read **`Intent.md`** fully — it is your mission, operating loop, and rules.
 2. Read **`PROGRESS.md`** to locate the current state of the work.
-2b. Append a **[START]** entry to **`OPS_LOG.md`** (§7.5) — every session is attributed.
+2b. Append a **[START]** entry to **`OPS_LOG.md`** (§7.5) — every session is attributed. This is the only
+    permitted Phase 0 mutation: it is operational bookkeeping, not a project-code or configuration change.
 3. Follow the loop in Intent.md: OBSERVE → PLAN → ACT → VERIFY → COMMIT → RECORD → REPEAT.
-4. Halt ONLY at the Phase 2 approval gate. Never modify code before that gate.
+4. Halt ONLY at the Phase 2 approval gate. Never modify project code or configuration before that gate.
 5. Maintain all state files (`PROJECT_MAP.md`, `AUDIT_REPORT.md`, `SECURITY_AUDIT.md`, `DECISIONS.md`,
    `PROGRESS.md`, `OPS_LOG.md`, `EXTENSIONS.md`, `COMPLETION_REPORT.md`) as specified in Intent.md §3.
 

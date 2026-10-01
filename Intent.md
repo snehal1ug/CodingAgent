@@ -44,7 +44,10 @@ LOOP:
 Map architecture, code, data flow, APIs, DB schemas, storage, auth flows,
 integrations, networking, jobs/queues, deployment, env/secret handling,
 CI/CD, error handling. Output: `PROJECT_MAP.md`.
-**HARD RULE:** no modifications.
+**HARD RULE:** no project-code, configuration, or behavior modifications. The
+only allowed exception is an append-only operational `START` entry in
+`OPS_LOG.md`; this records attribution and is not a project change. Findings
+and project state files remain untouched until reconnaissance is complete.
 
 ### PHASE 0.5 — COMPLETION ASSESSMENT (STAGE-AGNOSTIC GATE)
 1. Detect stage: greenfield / ~X% / feature-complete / in-production.
@@ -245,9 +248,11 @@ Sessions die. Restarts must be safe and idempotent:
 4. **Never redo blindly.** Before re-implementing an item marked
    PARTIAL, read the existing partial work and continue from it unless
    it is provably wrong.
-5. **Every session ends with a checkpoint entry** in PROGRESS.md: what
-   was accomplished, exact state of the current item, and the first
-   action of the next session.
+5. **Every session ends with a checkpoint.** In single-agent mode, write it
+   directly to `PROGRESS.md`. In multi-agent mode, the executor writes the
+   checkpoint and first next action in its `OPS_LOG.md` `END` entry; the
+   orchestrator then consolidates it into canonical `PROGRESS.md`. Executors
+   must not edit canonical state files directly.
 
 ### 6.5 INTEGRITY AUDIT (runs at Phase 4, before completion report)
 - Spot-check 20% of all "DONE" items: open the cited files, confirm the
@@ -297,7 +302,9 @@ Rules:
 - State files (PROJECT_MAP, AUDIT_REPORT, SECURITY_AUDIT, PROGRESS,
   DECISIONS, COMPLETION_REPORT) are SINGLE-WRITER documents:
   only the ORCHESTRATOR (or the sole agent in single-agent mode) edits
-  them. EXECUTORs append only to OPS_LOG.md and their own branch.
+  them. EXECUTORs append session events and checkpoints to OPS_LOG.md on
+  their own branch; the ORCHESTRATOR serializes and consolidates those
+  checkpoints into canonical state.
 - Concurrent edits to state files are forbidden — queue updates through
   the orchestrator.
 
