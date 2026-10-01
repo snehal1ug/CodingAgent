@@ -23,6 +23,7 @@ This repository contains a stack-agnostic operating kit for an autonomous coding
 | `PROJECT_MAP.md` | Read-only reconnaissance and completion backlog |
 | `AUDIT_REPORT.md` | Failure-simulation findings and recommendations |
 | `SECURITY_AUDIT.md` | Security checklist and evidence-backed findings |
+| `SECURITY.md` | Vulnerability reporting policy and supported versions |
 | `PROGRESS.md` | Canonical backlog and phase state |
 | `DECISIONS.md` | Reversible autonomous decisions and integrity events |
 | `OPS_LOG.md` | Append-only session attribution and operational events |

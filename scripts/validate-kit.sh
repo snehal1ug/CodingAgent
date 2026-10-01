@@ -6,7 +6,7 @@ cd "$ROOT"
 
 required=(
   AGENTS.md Intent.md PROGRESS.md PROJECT_MAP.md AUDIT_REPORT.md
-  SECURITY_AUDIT.md DECISIONS.md OPS_LOG.md EXTENSIONS.md
+  SECURITY_AUDIT.md SECURITY.md DECISIONS.md OPS_LOG.md EXTENSIONS.md
   COMPLETION_REPORT.md README.md
 )
 
@@ -21,6 +21,7 @@ declare -A headings=(
   [PROJECT_MAP.md]="# PROJECT_MAP.md"
   [AUDIT_REPORT.md]="# AUDIT_REPORT.md"
   [SECURITY_AUDIT.md]="# SECURITY_AUDIT.md"
+  [SECURITY.md]="# Security Policy"
   [DECISIONS.md]="# DECISIONS.md"
   [OPS_LOG.md]="# OPS_LOG.md"
   [EXTENSIONS.md]="# EXTENSIONS.md"
@@ -37,6 +38,17 @@ done
 
 # Check every committed file for whitespace errors, including the root commit.
 git diff-tree --check --root HEAD
+
+# Require every third-party GitHub Action to use a full 40-character commit SHA.
+# This prevents a mutable tag or branch from changing the code executed by CI.
+while IFS= read -r action_line; do
+  action_ref="${action_line##*@}"
+  action_ref="${action_ref%%[[:space:]]*}"
+  if [[ ! "$action_ref" =~ ^[0-9a-fA-F]{40}$ ]]; then
+    echo "ERROR: mutable or invalid GitHub Action reference: $action_line" >&2
+    exit 1
+  fi
+done < <(grep -hE '^[[:space:]]*uses:[[:space:]]+[^[:space:]]+@[^[:space:]]+' .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null || true)
 
 # Detect common accidental credential material. Documentation may describe secrets,
 # but it must not contain credential-shaped values.
